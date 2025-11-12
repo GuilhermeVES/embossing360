@@ -212,7 +212,7 @@
       scene.add(light);
 
       const loader = new THREE.GLTFLoader();
-      loader.load('../../model/RT_H-3468.glb', (gltf) => {
+      loader.load('model/RT_H-3468.glb', (gltf) => {
         model = gltf.scene;
         scene.add(model);
       }, undefined, (error) => {
