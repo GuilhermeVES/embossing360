@@ -84,18 +84,19 @@
       background-color: #50b948;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 10px 25px;
+      border-radius: 30px;
       cursor: pointer;
       font-size: 1rem;
-      transition: background-color 0.3s;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
     }
 
     .botoes button:hover {
       background-color: #3e9a3a;
     }
 
-    .imagem-apresentacao, #canvasContainer {
+    .imagem-apresentacao {
       width: 100%;
       height: 480px;
       border: 1px solid #ccc;
@@ -147,17 +148,13 @@
       </div>
 
       <div class="lado-direito">
-        <div class="imagem-apresentacao" id="viewStatic">
-          <img src="../../images/apresentacao.jpg" alt="Imagem de Apresentação" />
-        </div>
-
-        <div id="canvasContainer" style="display: none;">
+        <!-- ✅ Modelo 3D sempre visível -->
+        <div class="imagem-apresentacao" id="canvasContainer">
           <canvas id="canvas3D"></canvas>
         </div>
 
         <div class="botoes">
-          <button id="downloadBtn">Download da Imagem</button>
-          <button id="toggle3DBtn">Visualizar em 3D</button>
+          <button id="downloadBtn">Download da imagem</button>
           <button id="backBtn">Voltar</button>
         </div>
       </div>
@@ -179,10 +176,7 @@
     import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-    const toggle3DBtn = document.getElementById('toggle3DBtn');
-    const viewStatic = document.getElementById('viewStatic');
     const canvasContainer = document.getElementById('canvasContainer');
-
     let scene, camera, renderer, controls, model;
 
     function init3D() {
@@ -222,17 +216,18 @@
       renderer.render(scene, camera);
     }
 
-    toggle3DBtn.addEventListener('click', () => {
-      if (canvasContainer.style.display === 'none') {
-        viewStatic.style.display = 'none';
-        canvasContainer.style.display = 'block';
-        toggle3DBtn.innerText = 'Visualizar imagem estática';
-        if (!renderer) init3D();
-      } else {
-        canvasContainer.style.display = 'none';
-        viewStatic.style.display = 'block';
-        toggle3DBtn.innerText = 'Visualizar em 3D';
-      }
+    window.addEventListener('load', init3D);
+
+    // ✅ Ações dos botões
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.href = 'images/RT_H-3468.jpg';
+      link.download = 'RT_H-3468.jpg';
+      link.click();
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.history.back();
     });
   </script>
 </body>
