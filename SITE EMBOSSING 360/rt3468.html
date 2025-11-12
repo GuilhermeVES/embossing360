@@ -42,27 +42,6 @@
       cursor: pointer;
     }
 
-    .language-menu {
-      position: absolute;
-      top: 50px;
-      right: 0;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-    }
-
-    .language-menu div {
-      padding: 10px 20px;
-      cursor: pointer;
-    }
-
-    .language-menu div:hover {
-      background-color: #f0f0f0;
-    }
-
     main {
       flex: 1;
       padding: 20px;
@@ -185,16 +164,25 @@
     </div>
   </main>
 
-  <!-- ✅ Biblioteca Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- ✅ Importmap e módulo Three.js moderno -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/"
+      }
+    }
+  </script>
 
-  <script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
     const toggle3DBtn = document.getElementById('toggle3DBtn');
     const viewStatic = document.getElementById('viewStatic');
     const canvasContainer = document.getElementById('canvasContainer');
-    const canvas3D = document.getElementById('canvas3D');
+
     let scene, camera, renderer, controls, model;
 
     function init3D() {
@@ -204,22 +192,24 @@
       camera = new THREE.PerspectiveCamera(45, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
       camera.position.set(2, 2, 3);
 
-      renderer = new THREE.WebGLRenderer({ canvas: canvas3D, antialias: true });
+      renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+      canvasContainer.innerHTML = ''; 
+      canvasContainer.appendChild(renderer.domElement);
 
       const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
-      light.position.set(0, 1, 0);
       scene.add(light);
 
-      const loader = new THREE.GLTFLoader();
-      loader.load('model/RT_H-3468.glb', (gltf) => {
+      const loader = new GLTFLoader();
+      loader.load('https://embossing360-teal.vercel.app/model/RT_H-3468.glb', (gltf) => {
         model = gltf.scene;
+        model.position.y = -0.5;
         scene.add(model);
       }, undefined, (error) => {
-        console.error('Erro ao carregar o modelo:', error);
+        console.error('Erro ao carregar modelo:', error);
       });
 
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
 
       animate();
