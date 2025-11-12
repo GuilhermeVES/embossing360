@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Página do Produto - RT# H-3468 - Valmet Engraving Solutions</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Maven Pro', sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      height: 110px;
+      background-color: #50b948;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-sizing: border-box;
+    }
+
+    .logo img {
+      height: 60px;
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .header-icons img {
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .language-menu {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .language-menu div {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .language-menu div:hover {
+      background-color: #f0f0f0;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .imagem-grande,
+    .lado-direito {
+      flex: 0 0 49%;
+      max-width: 49%;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+
+    .botoes {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .botoes button {
+      background-color: #50b948;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    .botoes button:hover {
+      background-color: #3e9a3a;
+    }
+
+    .imagem-apresentacao, #canvasContainer {
+      width: 100%;
+      height: 480px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+
+      .imagem-grande,
+      .lado-direito {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="../../index.html">
+        <img src="images/logo valmet.png" alt="Valmet Logo">
+      </a>
+    </div>
+
+    <div class="header-icons">
+      <img src="images/icone idioma.png" alt="Idioma" id="languageIcon">
+      <img src="images/icone login.png" alt="Logout" id="logoutIcon">
+    </div>
+  </header>
+
+  <main>
+    <h1>Página do Produto - RT# H-3468</h1>
+
+    <div class="container">
+      <div class="imagem-grande">
+        <img src="images/RT_H-3468.jpg" alt="Imagem RT# H-3468" />
+      </div>
+
+      <div class="lado-direito">
+        <div class="imagem-apresentacao" id="viewStatic">
+          <img src="../../images/apresentacao.jpg" alt="Imagem de Apresentação" />
+        </div>
+
+        <div id="canvasContainer" style="display: none;">
+          <canvas id="canvas3D"></canvas>
+        </div>
+
+        <div class="botoes">
+          <button id="downloadBtn">Download da Imagem</button>
+          <button id="toggle3DBtn">Visualizar em 3D</button>
+          <button id="backBtn">Voltar</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ✅ Biblioteca Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+
+  <script>
+    const toggle3DBtn = document.getElementById('toggle3DBtn');
+    const viewStatic = document.getElementById('viewStatic');
+    const canvasContainer = document.getElementById('canvasContainer');
+    const canvas3D = document.getElementById('canvas3D');
+    let scene, camera, renderer, controls, model;
+
+    function init3D() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+
+      camera = new THREE.PerspectiveCamera(45, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+      camera.position.set(2, 2, 3);
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas3D, antialias: true });
+      renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+
+      const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+      light.position.set(0, 1, 0);
+      scene.add(light);
+
+      const loader = new THREE.GLTFLoader();
+      loader.load('../model/RT_H-3468.glb', (gltf) => {
+        model = gltf.scene;
+        scene.add(model);
+      }, undefined, (error) => {
+        console.error('Erro ao carregar o modelo:', error);
+      });
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (model) model.rotation.y += 0.002;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    toggle3DBtn.addEventListener('click', () => {
+      if (canvasContainer.style.display === 'none') {
+        viewStatic.style.display = 'none';
+        canvasContainer.style.display = 'block';
+        toggle3DBtn.innerText = 'Visualizar imagem estática';
+        if (!renderer) init3D();
+      } else {
+        canvasContainer.style.display = 'none';
+        viewStatic.style.display = 'block';
+        toggle3DBtn.innerText = 'Visualizar em 3D';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+[[headers]]
+  for = "/model/*.glb"
+  [headers.values]
+  Content-Type = "model/gltf-binary"
+  Access-Control-Allow-Origin = "*"
+  Access-Control-Allow-Headers = "*"
+  Access-Control-Allow-Methods = "GET, POST, OPTIONS"
