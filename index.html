@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embossing 360</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Maven Pro', sans-serif;
+      background-color: #ffffff;
+      background: url('images/bg-01.png') no-repeat center top;
+      background-size: cover;
+      background-attachment: scroll;
+    }
+
+    header {
+      width: 100%;
+      height: 110px;
+      background-color: #50b948;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 1001;
+    }
+
+    .logo img {
+      height: 60px;
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+      margin-left: auto;
+    }
+
+    .header-icons img {
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .language-selector {
+      position: relative;
+      user-select: none;
+    }
+
+    .language-toggle {
+      cursor: pointer;
+    }
+
+    .language-dropdown {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      display: none;
+      flex-direction: column;
+      z-index: 1000; /* Aumentado para ficar na frente do banner */
+      min-width: 100px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .language-dropdown a {
+      padding: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      font-size: 0.9em;
+    }
+
+    .language-dropdown a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .banner {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      display: block;
+      margin-top: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .steps-section {
+      padding: 60px 20px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      /* overflow: hidden;  <-- REMOVIDO para evitar corte dos boxes */
+      position: relative;
+      z-index: 2;
+      max-width: 100%; /* garante que o container não corte no horizontal */
+    }
+
+    .boxes-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      /* flex-wrap: wrap;  <-- REMOVIDO para evitar quebra que pode causar corte */
+      z-index: 2;
+      position: relative;
+      flex-wrap: nowrap; /* força os boxes ficarem em linha única */
+      overflow: visible; /* evita cortes */
+      max-width: 100%; /* para garantir que não corta no container */
+      box-sizing: border-box;
+    }
+
+    .box-step {
+      width: 300px;
+      max-width: 90%;
+      height: 400px;
+      animation: fadeIn 1s ease-in;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat; /* reforçado para evitar cortes */
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 20px;
+      transition: background-color 0.3s, transform 0.3s;
+      box-sizing: border-box;
+      text-align: center; /* garante texto centralizado */
+    }
+
+    .box-step:hover {
+      transform: scale(1.05);
+      /* box-shadow removido */
+    }
+
+    .box-step .box-text {
+      font-family: 'Maven Pro', sans-serif;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 27px;
+      color: #4c4d4f;
+      text-align: center;
+      z-index: 3;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      width: 100%;
+      padding: 0 10px;
+      box-sizing: border-box;
+      margin-top: 135px;
+    }
+
+    .step-connector {
+      width: 50px;
+      height: auto;
+      align-self: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .action-buttons {
+      margin: 20px 0 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 3;
+    }
+
+    .action-buttons a {
+      text-decoration: none;
+      background-color: #50b948;
+      color: white;
+      padding: 15px 50px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.2em;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      display: inline-block;
+      user-select: none;
+    }
+
+    .action-buttons a:hover {
+      background-color: #3c9439;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .footer-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: -400px;
+      position: relative;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .boxes-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .step-connector {
+        transform: rotate(90deg);
+      }
+
+      .header-buttons {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <a href="https://www.valmet.com" target="_blank" rel="noopener">
+        <img src="images/logo valmet.png" alt="Valmet Logo" />
+      </a>
+    </div>
+    <div class="header-icons">
+      <a href="login.html" id="header-login-icon"><img src="images/icone login.png" alt="Login" /></a>
+      <div class="language-selector">
+        <img src="images/icone idioma.png" alt="Selecionar idioma" class="language-toggle" id="language-toggle" />
+        <div id="language-menu" class="language-dropdown">
+          <a href="#" data-lang="pt">Português</a>
+          <a href="#" data-lang="en">English</a>
+          <a href="#" data-lang="es">Español</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <img src="images/header-01.png" alt="Banner Embossing 360" class="banner" />
+
+  <div class="steps-section">
+    <div class="boxes-container">
+      <div class="box-step" style="background-image: url('images/passo 1-01-01.png');">
+        <p class="box-text" id="text-box-1">Texto do passo 1</p>
+      </div>
+
+      <img src="images/icone passo 1-2-01.png" alt="Conector" class="step-connector" />
+
+      <div class="box-step" style="background-image: url('images/passo 2-01-01.png');">
+        <p class="box-text" id="text-box-2">Texto do passo 2</p>
+      </div>
+
+      <img src="images/icone passo 2-3-01.png" alt="Conector" class="step-connector" />
+
+      <div class="box-step" style="background-image: url('images/passo 3-01-01.png');">
+        <p class="box-text" id="text-box-3">Texto do passo 3</p>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <a href="cadastro.html" id="btn-cadastro">Cadastro</a>
+      <a href="login.html" id="btn-login">Login</a>
+    </div>
+  </div>
+
+  <img src="images/rodape-01.png" alt="Imagem de rodapé" class="footer-image" />
+
+  <script>
+    const languageToggle = document.getElementById('language-toggle');
+    const languageMenu = document.getElementById('language-menu');
+
+    languageToggle.addEventListener('click', () => {
+      languageMenu.style.display = languageMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!languageToggle.contains(e.target) && !languageMenu.contains(e.target)) {
+        languageMenu.style.display = 'none';
+      }
+    });
+
+    const texts = {
+      pt: {
+        cadastro: "Cadastro",
+        login: "Login",
+        passo1: "Faça seu cadastro com informações como nome, email, empresa e país. Em seguida você receberá um email com os dados para o seu login.",
+        passo2: "Faça o login utilizando os dados que você recebeu via email e tenha acesso a nossa página de produtos.",
+        passo3: "Navegue pelas categorias e abra os padrões para ver a projeção 3D. Faça o download dos padrões que preferir."
+      },
+      en: {
+        cadastro: "Register",
+        login: "Login",
+        passo1: "Register with information such as name, email, company, and country. You will receive an email with login details.",
+        passo2: "Log in using the credentials you received by email to access our product page.",
+        passo3: "Browse categories, open the patterns to see the 3D view, and download the ones you prefer."
+      },
+      es: {
+        cadastro: "Registro",
+        login: "Iniciar sesión",
+        passo1: "Regístrese con información como nombre, correo, empresa y país. Luego recibirá un correo con sus datos de acceso.",
+        passo2: "Inicie sesión con los datos recibidos por correo electrónico para acceder a nuestra página de productos.",
+        passo3: "Navegue por las categorías, vea la vista 3D de los patrones y descargue los que prefiera."
+      }
+    };
+
+    function updateTexts(lang) {
+      document.getElementById('btn-cadastro').textContent = texts[lang].cadastro;
+      document.getElementById('btn-login').textContent = texts[lang].login;
+      document.getElementById('header-login-icon').title = texts[lang].login;
+      document.getElementById('text-box-1').textContent = texts[lang].passo1;
+      document.getElementById('text-box-2').textContent = texts[lang].passo2;
+      document.getElementById('text-box-3').textContent = texts[lang].passo3;
+    }
+
+    let currentLang = localStorage.getItem('siteLanguage') || 'pt';
+    updateTexts(currentLang);
+
+    languageMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const selectedLang = link.getAttribute('data-lang');
+        localStorage.setItem('siteLanguage', selectedLang);
+        currentLang = selectedLang;
+        updateTexts(currentLang);
+        languageMenu.style.display = 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>

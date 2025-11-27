@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Página do Produto - RT# H-3468 - Valmet Engraving Solutions</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Maven Pro', sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      height: 110px;
+      background-color: #50b948;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-sizing: border-box;
+    }
+
+    .logo img {
+      height: 60px;
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .header-icons img {
+      height: 32px;
+      cursor: pointer;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .imagem-grande,
+    .lado-direito {
+      flex: 0 0 49%;
+      max-width: 49%;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+
+    .botoes {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .botoes button {
+      background-color: #50b948;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    .botoes button:hover {
+      background-color: #3e9a3a;
+    }
+
+    .imagem-apresentacao {
+      width: 100%;
+      height: 480px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+
+      .imagem-grande,
+      .lado-direito {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="../../index.html">
+        <img src="images/logo valmet.png" alt="Valmet Logo">
+      </a>
+    </div>
+
+    <div class="header-icons">
+      <img src="images/icone idioma.png" alt="Idioma" id="languageIcon">
+      <img src="images/icone login.png" alt="Logout" id="logoutIcon">
+    </div>
+  </header>
+
+  <main>
+    <h1>Página do Produto - RT# H-3468</h1>
+
+    <div class="container">
+      <div class="imagem-grande">
+        <img src="images/RT_H-3468.jpg" alt="Imagem RT# H-3468" />
+      </div>
+
+      <div class="lado-direito">
+        <!-- ✅ Modelo 3D sempre visível -->
+        <div class="imagem-apresentacao" id="canvasContainer">
+          <canvas id="canvas3D"></canvas>
+        </div>
+
+        <div class="botoes">
+          <button id="downloadBtn">Download da imagem</button>
+          <button id="backBtn">Voltar</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ✅ Importmap e módulo Three.js moderno -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+    const canvasContainer = document.getElementById('canvasContainer');
+    let scene, camera, renderer, controls, model;
+
+    function init3D() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+
+      camera = new THREE.PerspectiveCamera(45, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+      camera.position.set(2, 2, 3);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+      canvasContainer.innerHTML = ''; 
+      canvasContainer.appendChild(renderer.domElement);
+
+      const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+      scene.add(light);
+
+      const loader = new GLTFLoader();
+      loader.load('https://embossing360-teal.vercel.app/model/RT_H-3468.glb', (gltf) => {
+        model = gltf.scene;
+        model.position.y = -0.5;
+        scene.add(model);
+      }, undefined, (error) => {
+        console.error('Erro ao carregar modelo:', error);
+      });
+
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (model) model.rotation.y += 0.002;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('load', init3D);
+
+    // ✅ Ações dos botões
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.href = 'images/RT_H-3468.jpg';
+      link.download = 'RT_H-3468.jpg';
+      link.click();
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.history.back();
+    });
+  </script>
+</body>
+</html>

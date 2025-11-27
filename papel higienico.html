@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Papel Higiênico - Valmet Engraving Solutions</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Maven Pro', sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1920px;
+      height: 110px;
+      background-color: #50b948;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-sizing: border-box;
+    }
+
+    .logo img {
+      height: 60px;
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .header-icons img {
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .language-menu {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .language-menu div {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .language-menu div:hover {
+      background-color: #f0f0f0;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    nav ul li {
+      margin: 10px 0;
+    }
+
+    nav ul li a {
+      display: block;
+      text-decoration: none;
+      background-color: #50b948;
+      color: white;
+      padding: 15px 50px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.2em;
+      text-align: center;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    nav ul li a:hover {
+      background-color: #3c9439;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-btn {
+      display: block;
+      width: fit-content;
+      margin: 30px auto 0;
+      padding: 12px 32px;
+      background-color: #50b948;
+      color: white;
+      text-align: center;
+      border-radius: 30px;
+      text-decoration: none;
+      font-size: 1em;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .back-btn:hover {
+      background-color: #3c9439;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <a href="index.html">
+      <img src="images/logo valmet.png" alt="Valmet Logo">
+    </a>
+  </div>
+  <div class="header-icons">
+    <img src="images/icone idioma.png" alt="Idioma" id="languageIcon">
+    <img src="images/icone login.png" alt="Logout" id="logoutIcon">
+    <div class="language-menu" id="languageMenu">
+      <div data-lang="pt">Português</div>
+      <div data-lang="en">English</div>
+      <div data-lang="es">Español</div>
+    </div>
+  </div>
+</header>
+
+<!-- Conteúdo -->
+<main>
+  <h1 id="pageTitle">Papel Higiênico</h1>
+
+  <nav>
+    <ul>
+      <li><a href="papel higienico folha simples.html">Folha Simples</a></li>
+      <li><a href="higienico gic.html">Gic</a></li>
+      <li><a href="higienico desl.html">Desl</a></li>
+      <li><a href="higienico cdesl.html">C-Desl</a></li>
+      <li><a href="higienico ttt.html">TTT</a></li>
+      <li><a href="higienico hibrido.html">Híbrido</a></li>
+    </ul>
+  </nav>
+
+  <a href="produtos.html" class="back-btn" id="backButton">← Voltar</a>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYv9oY_2yhTay2-N8PmlyY9hr5vu1rtPM",
+    authDomain: "embossing360-ce838.firebaseapp.com",
+    databaseURL: "https://embossing360-ce838-default-rtdb.firebaseio.com",
+    projectId: "embossing360-ce838",
+    storageBucket: "embossing360-ce838.appspot.com",
+    messagingSenderId: "1073930485959",
+    appId: "1:1073930485959:web:1e1ffa6a3af508f2877ee2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.getElementById('logoutIcon').addEventListener('click', () => {
+    signOut(auth).then(() => {
+      window.location.href = "index.html";
+    }).catch((error) => {
+      console.error('Erro ao sair:', error);
+    });
+  });
+</script>
+
+<script>
+  const languageIcon = document.getElementById('languageIcon');
+  const languageMenu = document.getElementById('languageMenu');
+
+  languageIcon.addEventListener('click', () => {
+    languageMenu.style.display = languageMenu.style.display === 'flex' ? 'none' : 'flex';
+  });
+
+  document.querySelectorAll('.language-menu div').forEach(item => {
+    item.addEventListener('click', () => {
+      const selectedLang = item.getAttribute('data-lang');
+      localStorage.setItem('selectedLanguage', selectedLang);
+      applyLanguage(selectedLang);
+      languageMenu.style.display = 'none';
+    });
+  });
+
+  function applyLanguage(lang) {
+    const translations = {
+      pt: {
+        pageTitle: "Papel Higiênico",
+        backButton: "← Voltar"
+      },
+      en: {
+        pageTitle: "Toilet Paper",
+        backButton: "← Back"
+      },
+      es: {
+        pageTitle: "Papel Higiénico",
+        backButton: "← Volver"
+      }
+    };
+
+    document.getElementById('pageTitle').innerText = translations[lang].pageTitle;
+    document.getElementById('backButton').innerText = translations[lang].backButton;
+  }
+
+  window.addEventListener('load', () => {
+    const savedLang = localStorage.getItem('siteLanguage') || 'pt';
+    applyLanguage(savedLang);
+  });
+
+  window.addEventListener('click', (e) => {
+    if (!languageIcon.contains(e.target) && !languageMenu.contains(e.target)) {
+      languageMenu.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>

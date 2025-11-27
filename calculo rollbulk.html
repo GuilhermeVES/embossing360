@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cálculo Roll Bulk</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Maven Pro', sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1920px;
+      height: 110px;
+      background-color: #50b948;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .logo img {
+      height: 60px;
+      cursor: pointer;
+    }
+
+    .menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-family: 'Maven Pro', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .menu-item {
+      position: relative;
+      cursor: pointer;
+      color: white;
+      font-family: 'Maven Pro', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .submenu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 1000;
+      min-width: 180px;
+    }
+
+    .submenu a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+      font-family: 'Maven Pro';
+    }
+
+    .submenu a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .menu-item:hover .submenu {
+      display: block;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .header-icons img {
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .language-menu {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .language-menu div {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: 'Maven Pro';
+    }
+
+    .language-menu div:hover {
+      background-color: #f0f0f0;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+      font-weight: bold;
+      text-align: center;
+      font-family: 'Maven Pro';
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 400px;
+      background-color: #f9f9f9;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: 500;
+      color: #333;
+      font-family: 'Maven Pro';
+    }
+
+    input, select {
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: 'Maven Pro', sans-serif;
+    }
+
+    /* 🔹 Botões copiados do seu primeiro código */
+    button, .back-button {
+      background-color: #50b948;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 18px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      margin-top: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    button:hover, .back-button:hover {
+      background-color: #3c9439;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .back-button {
+      display: inline-block;
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+
+    .result-section {
+      margin-top: 30px;
+      text-align: center;
+      display: none;
+    }
+
+    canvas {
+      max-width: 400px;
+      margin: 25px auto;
+    }
+
+    .tech-buttons a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 18px;
+      background-color: #50b948;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      text-align: center;
+    }
+
+    .tech-buttons a:hover {
+      background-color: #3c9439;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .tech-buttons a:hover {
+      background-color: #3c9439;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<header>
+  <div class="logo">
+    <a href="index.html"><img src="images/logo valmet.png" alt="Valmet Logo"></a>
+  </div>
+
+  <div class="menu">
+    <div class="menu-item">Categorias
+      <div class="submenu">
+        <a href="produtos.html">Todos os Produtos</a>
+        <a href="papel higienico.html">Papel Higiênico</a>
+        <a href="toalhas.html">Toalhas</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-icons">
+    <img src="images/icone idioma.png" alt="Idioma" id="languageIcon">
+    <img src="images/icone logout.png" alt="Logout" id="logoutIcon">
+    <div class="language-menu" id="languageMenu">
+      <div data-lang="pt">Português</div>
+      <div data-lang="en">English</div>
+      <div data-lang="es">Español</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  
+
+  <h1>Cálculo Roll Bulk</h1>
+
+  <form id="rollForm">
+    <label for="tipoProduto">Tipo de Produto:</label>
+    <select id="tipoProduto" required>
+      <option value="higienico">Papel Higiênico</option>
+      <option value="toalha">Papel Toalha</option>
+    </select>
+
+    <label for="diamRolo">Diâmetro do rolo (cm):</label>
+    <input type="number" id="diamRolo" step="0.01" required>
+
+    <label for="diamTubete">Diâmetro do tubete (cm):</label>
+    <input type="number" id="diamTubete" step="0.01" required>
+
+    <label for="altura">Altura do rolo (cm):</label>
+    <input type="number" id="altura" step="0.01" required>
+
+    <label for="metragem">Metragem (m):</label>
+    <input type="number" id="metragem" step="0.01" required>
+
+    <label for="gramatura">Gramatura (g/m²):</label>
+    <input type="number" id="gramatura" step="0.01" required>
+
+    <label for="plies">Plies:</label>
+    <input type="number" id="plies" step="1" required>
+
+    <div id="handFeelContainer">
+      <label for="handFeel">Hand Feel:</label>
+      <input type="number" id="handFeel" step="5" min="0" max="100" value="60">
+    </div>
+
+    <button type="submit">Calcular</button>
+
+    <a href="produtos.html" class="back-button">⬅ Voltar</a>
+  </form>
+
+  <div class="result-section" id="resultSection">
+    <h2>Resultado</h2>
+    <p><strong>Roll Bulk:</strong> <span id="rbValue"></span></p>
+    <p><strong>Tecnologia Recomendada:</strong> <span id="tecValue"></span></p>
+    <p id="msg"></p>
+
+    <canvas id="radarChart"></canvas>
+
+    <div class="tech-buttons" id="techButtons"></div>
+  </div>
+</main>
+
+<script>
+  const form = document.getElementById('rollForm');
+  const tipoProduto = document.getElementById('tipoProduto');
+  const handFeelContainer = document.getElementById('handFeelContainer');
+  const handFeelInput = document.getElementById('handFeel');
+  const resultSection = document.getElementById('resultSection');
+  const rbValue = document.getElementById('rbValue');
+  const tecValue = document.getElementById('tecValue');
+  const techButtons = document.getElementById('techButtons');
+  const msg = document.getElementById('msg');
+  let radarChart;
+
+  tipoProduto.addEventListener('change', () => {
+    if (tipoProduto.value === 'toalha') {
+      handFeelContainer.style.display = 'none';
+    } else {
+      handFeelContainer.style.display = 'block';
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const diamRolo = parseFloat(document.getElementById('diamRolo').value);
+    const diamTubete = parseFloat(document.getElementById('diamTubete').value);
+    const altura = parseFloat(document.getElementById('altura').value);
+    const metragem = parseFloat(document.getElementById('metragem').value);
+    const gramatura = parseFloat(document.getElementById('gramatura').value);
+    const plies = parseFloat(document.getElementById('plies').value);
+    const handFeel = tipoProduto.value === 'toalha' ? null : parseFloat(handFeelInput.value);
+
+    const volRolo = (Math.PI * Math.pow(diamRolo, 2) / 4) * altura;
+    const volTubete = (Math.PI * Math.pow(diamTubete, 2) / 4) * altura;
+    const pesoLiq = metragem * (altura / 100) * gramatura * plies;
+    const rollBulk = (volRolo - volTubete) / pesoLiq;
+
+    let tecnologia = '';
+    if (rollBulk <= 10) tecnologia = 'GIC';
+    else if (rollBulk <= 15) tecnologia = 'DESL / C-DESL';
+    else tecnologia = 'TTT / HÍBRIDO';
+
+    rbValue.textContent = rollBulk.toFixed(2);
+    tecValue.textContent = tecnologia;
+
+    let mensagem = `Para os dados inseridos, o padrão indicado é da tecnologia ${tecnologia}.`;
+    msg.textContent = mensagem;
+    resultSection.style.display = 'block';
+    setTimeout(() => {
+      window.scrollTo({
+        top: resultSection.offsetTop + resultSection.offsetHeight - window.innerHeight,
+        behavior: 'smooth'
+      });
+    }, 100);
+
+    let links = '';
+    if (tecnologia === 'GIC') {
+      links = tipoProduto.value === 'higienico'
+        ? `<a href="higienico gic.html">Ver Tecnologia GIC</a>`
+        : `<a href="papel toalha gic.html">Ver Tecnologia GIC</a>`;
+    } else if (tecnologia === 'DESL / C-DESL') {
+      links = `
+        <a href="${tipoProduto.value === 'higienico' ? 'higienico desl.html' : 'papel toalha desl.html'}">DESL</a>
+        <a href="${tipoProduto.value === 'higienico' ? 'higienico cdesl.html' : 'papel toalha cdesl.html'}">C-DESL</a>`;
+    } else if (tecnologia === 'TTT / HÍBRIDO') {
+      links = `
+        <a href="${tipoProduto.value === 'higienico' ? 'higienico ttt.html' : 'papel toalha ttt.html'}">TTT</a>
+        <a href="${tipoProduto.value === 'higienico' ? 'higienico hibrido.html' : 'papel toalha híbrido.html'}">HÍBRIDO</a>`;
+    }
+    techButtons.innerHTML = links;
+
+    const labels = ['Roll Bulk', 'Plies'];
+    const dataValues = [rollBulk, plies];
+    if (tipoProduto.value === 'higienico') {
+      labels.push('Hand Feel');
+      dataValues.push(handFeel);
+    }
+
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'Produto',
+        data: dataValues,
+        fill: true,
+        backgroundColor: 'rgba(80,185,72,0.2)',
+        borderColor: '#50b948',
+        pointBackgroundColor: '#50b948',
+      }]
+    };
+
+    if (radarChart) radarChart.destroy();
+   const ctx = document.getElementById('radarChart');
+    radarChart = new Chart(ctx, { type: 'radar', data });
+  });
+</script>
+</body>
+</html>
